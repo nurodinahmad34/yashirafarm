@@ -1,0 +1,12 @@
+name = "yashirafarm"
+main = "src/index.js"
+compatibility_date = "2026-10-19"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "yashirafarm-db"
+database_id = "MASUKKAN_DATABASE_ID_ANDA"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YashiraFarm - Member</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #2e7d32; --primary-dark: #1b5e20; --primary-light: #4caf50;
+            --danger: #c62828; --warning: #f57c00; --bg: #f5f7f5; --card: #fff;
+            --text: #1a1a1a; --text-sec: #555; --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --radius: 12px; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body { font-family: var(--font); background: var(--bg); color: var(--text); padding-bottom: 80px; min-height: 100vh; }
+        .container { max-width: 480px; margin: 0 auto; padding: 16px; }
+        .header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 20px 16px; border-radius: 0 0 24px 24px; margin: -16px -16px 20px -16px; text-align: center; }
+        .header h1 { font-size: 22px; }
+        .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: var(--card); padding: 14px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; }
+        .stat-card .label { font-size: 11px; color: var(--text-sec); text-transform: uppercase; }
+        .stat-card .value { font-size: 20px; font-weight: 700; color: var(--primary-dark); margin-top: 4px; }
+        .stat-card .value.uang { color: var(--warning); }
+        .tab-nav { display: flex; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
+        .tab-nav button { flex: 1; padding: 12px; border: none; background: transparent; font-size: 14px; font-weight: 600; color: var(--text-sec); cursor: pointer; border-bottom: 3px solid transparent; }
+        .tab-nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0f7f0; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-sec); margin-bottom: 4px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 15px; background: white; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
+        .btn { display: inline-block; padding: 12px 24px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; text-align: center; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sm { padding: 6px 14px; font-size: 12px; width: auto; }
+        .btn-info { background: #1565c0; color: white; }
+        .koloni-item { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 12px; border-left: 4px solid var(--primary); }
+        .koloni-item .nama { font-size: 17px; font-weight: 700; }
+        .koloni-item .detail { font-size: 13px; color: var(--text-sec); margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px 12px; }
+        .koloni-item .detail span { background: var(--bg); padding: 2px 10px; border-radius: 20px; }
+        .koloni-item .saran-pakan { background: #fff3e0; border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 13px; border-left: 3px solid var(--warning); }
+        .koloni-item .actions { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .transaksi-item { background: var(--card); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--primary); }
+        .transaksi-item.pengeluaran { border-left-color: var(--danger); }
+        .transaksi-item .nominal { font-weight: 700; font-size: 15px; }
+        .transaksi-item .nominal.plus { color: var(--primary); }
+        .transaksi-item .nominal.minus { color: var(--danger); }
+        .app-footer { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 12px 16px; text-align: center; border-top: 2px solid var(--primary-light); box-shadow: 0 -2px 10px rgba(0,0,0,0.08); max-width: 480px; margin: 0 auto; width: 100%; z-index: 999; }
+        #footerTelegramBtn { background: none; border: none; color: var(--primary); font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; padding: 10px 20px; width: 100%; border-radius: 8px; }
+        #footerTelegramBtn:active { background: #e8f5e9; }
+        #footerTelegramBtn::before { content: "💬"; font-size: 20px; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-sec); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 200; padding: 20px; }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background: white; border-radius: 16px; padding: 24px; max-width: 440px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .modal-box h2 { margin-bottom: 16px; font-size: 20px; }
+        .modal-box .btn-close-modal { float: right; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
+        .logout-btn { background: #ffebee; color: #c62828; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-bottom: 12px; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐔 YashiraFarm</h1>
+            <p>Manajemen Koloni & Keuangan</p>
+        </div>
+
+        <button class="logout-btn" id="btnLogout">🚪 Logout</button>
+
+        <div class="stats-grid">
+            <div class="stat-card"><div class="label">Koloni</div><div class="value" id="totalKoloni">0</div></div>
+            <div class="stat-card"><div class="label">Populasi</div><div class="value" id="totalPopulasi">0</div></div>
+            <div class="stat-card"><div class="label">Saldo</div><div class="value uang" id="totalSaldo">Rp0</div></div>
+            <div class="stat-card"><div class="label">Rata Pakan/Ekor</div><div class="value" id="rataPakan">Rp0</div></div>
+        </div>
+
+        <div class="tab-nav">
+            <button class="active" data-tab="tabKoloni">📋 Koloni</button>
+            <button data-tab="tabKeuangan">💰 Keuangan</button>
+        </div>
+
+        <div class="tab-content active" id="tabKoloni">
+            <button class="btn btn-primary" id="btnTambahKoloni" style="margin-bottom:16px;">+ Tambah Koloni</button>
+            <div id="daftarKoloni"></div>
+        </div>
+
+        <div class="tab-content" id="tabKeuangan">
+            <div style="background:white;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:16px;">
+                <h3 style="font-size:16px;margin-bottom:12px;">Tambah Transaksi</h3>
+                <div class="form-group"><label>Tipe</label><select id="trxTipe"><option value="pemasukan">Pemasukan</option><option value="pengeluaran">Pengeluaran</option></select></div>
+                <div class="form-group"><label>Kategori</label><select id="trxKategori"><optgroup label="Pemasukan"><option value="penjualan ayam">Penjualan Ayam</option><option value="penjualan telur">Penjualan Telur</option><option value="lainnya pemasukan">Lainnya</option></optgroup><optgroup label="Pengeluaran"><option value="pakan">Pakan</option><option value="obat">Obat/Vaksin</option><option value="listrik">Listrik</option><option value="transportasi">Transportasi</option><option value="lainnya pengeluaran">Lainnya</option></optgroup></select></div>
+                <div class="form-group"><label>Nominal (Rp)</label><input type="number" id="trxNominal" placeholder="0" min="0"></div>
+                <div class="form-group"><label>Tanggal</label><input type="date" id="trxTanggal"></div>
+                <div class="form-group"><label>Deskripsi (opsional)</label><input type="text" id="trxDeskripsi" placeholder="Catatan singkat"></div>
+                <button class="btn btn-primary" id="btnSimpanTrx">Simpan Transaksi</button>
+            </div>
+            <h3 style="font-size:16px;margin-bottom:10px;">Riwayat</h3>
+            <div id="daftarTransaksi"></div>
+        </div>
+
+        <div class="modal-overlay" id="modalKoloni">
+            <div class="modal-box">
+                <button class="btn-close-modal" id="modalClose">✕</button>
+                <h2 id="modalTitle">Tambah Koloni</h2>
+                <div class="form-group"><label>Nama Koloni</label><input type="text" id="formNama" placeholder="Misal: Broiler A"></div>
+                <div class="form-group"><label>Tanggal Lahir / Masuk</label><input type="date" id="formTanggal"></div>
+                <div class="form-group"><label>Populasi (ekor)</label><input type="number" id="formPopulasi" placeholder="0" min="0"></div>
+                <div class="form-group"><label>Konsumsi Pakan Aktual (Kg/Hari)</label><input type="number" id="formPakan" placeholder="0.0" min="0" step="0.1"><small style="color:var(--text-sec);font-size:12px;">Kosongkan untuk saran otomatis</small></div>
+                <button class="btn btn-primary" id="btnSimpanKoloni">Simpan</button>
+            </div>
+        </div>
+
+        <div class="app-footer">
+            <button id="footerTelegramBtn">Grup Kami</button>
+        </div>
+    </div>
+
+    <script>
+        // ========================================================================
+        // DATA TAKARAN PAKAN
+        // ========================================================================
+        const TAKARAN_PAKAN = [
+            { minggu: 1, hariMulai: 1, hariSelesai: 7, rataGram: 12.14, fase: 'Starter (PK 20-22%)' },
+            { minggu: 2, hariMulai: 8, hariSelesai: 14, rataGram: 20.43, fase: 'Starter (PK 20-22%)' },
+            { minggu: 3, hariMulai: 15, hariSelesai: 21, rataGram: 30.00, fase: 'Starter (PK 20-22%)' },
+            { minggu: 4, hariMulai: 22, hariSelesai: 28, rataGram: 43.43, fase: 'Starter (PK 20-22%)' },
+            { minggu: 5, hariMulai: 29, hariSelesai: 35, rataGram: 45.72, fase: 'Grower (PK 18-20%)' },
+            { minggu: 6, hariMulai: 36, hariSelesai: 42, rataGram: 48.52, fase: 'Grower (PK 18-20%)' },
+            { minggu: 7, hariMulai: 43, hariSelesai: 49, rataGram: 51.32, fase: 'Grower (PK 18-20%)' },
+            { minggu: 8, hariMulai: 50, hariSelesai: 56, rataGram: 54.12, fase: 'Grower (PK 18-20%)' },
+            { minggu: 9, hariMulai: 57, hariSelesai: 63, rataGram: 56.92, fase: 'Grower (PK 18-20%)' },
+            { minggu: 10, hariMulai: 64, hariSelesai: 70, rataGram: 59.72, fase: 'Grower (PK 18-20%)' },
+            { minggu: 11, hariMulai: 71, hariSelesai: 77, rataGram: 62.52, fase: 'Grower (PK 18-20%)' },
+            { minggu: 12, hariMulai: 78, hariSelesai: 84, rataGram: 65.32, fase: 'Grower (PK 18-20%)' },
+            { minggu: 13, hariMulai: 85, hariSelesai: 91, rataGram: 68.12, fase: 'Grower (PK 18-20%)' },
+            { minggu: 14, hariMulai: 92, hariSelesai: 98, rataGram: 70.00, fase: 'Grower (PK 18-20%)' },
+            { minggu: 15, hariMulai: 99, hariSelesai: 105, rataGram: 70.00, fase: 'Grower (PK 18-20%)' },
+            { minggu: 16, hariMulai: 106, hariSelesai: 112, rataGram: 70.00, fase: 'Grower (PK 18-20%)' },
+            { minggu: 17, hariMulai: 113, hariSelesai: 119, rataGram: 70.00, fase: 'Grower (PK 18-20%)' },
+            { minggu: 18, hariMulai: 120, hariSelesai: 126, rataGram: 70.00, fase: 'Grower (PK 18-20%)' },
+            { minggu: 19, hariMulai: 127, hariSelesai: 133, rataGram: 70.00, fase: 'Grower (PK 18-20%)' },
+            { minggu: 20, hariMulai: 134, hariSelesai: 140, rataGram: 70.00, fase: 'Grower (PK 18-20%)' },
+        ];
+
+        function getSaranPakan(umurHari) {
+            for (let t of TAKARAN_PAKAN) {
+                if (umurHari >= t.hariMulai && umurHari <= t.hariSelesai) return t;
+            }
+            if (umurHari > 140) return { minggu: '>20', rataGram: 70.00, fase: 'Maintenance' };
+            return null;
+        }
+
+        function hitungUmurHari(tgl) {
+            if (!tgl) return 0;
+            const lahir = new Date(tgl);
+            const now = new Date();
+            const diff = now - lahir;
+            return diff < 0 ? 0 : Math.floor(diff / (1000 * 60 * 60 * 24));
+        }
+
+        function hitungUmur(tgl) {
+            const h = hitungUmurHari(tgl);
+            if (h === 0) return '0 hari';
+            if (h < 30) return `${h} hari`;
+            return `${Math.floor(h/30)} bln ${h%30} hr (${h} hari)`;
+        }
+
+        function formatRupiah(n) { return 'Rp' + (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+        // ========================================================================
+        // STATE
+        // ========================================================================
+        let koloniList = [];
+        let keuanganList = [];
+        let currentUser = null;
+
+        // ========================================================================
+        // API CALLS
+        // ========================================================================
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const opts = { method, headers: { 'Content-Type': 'application/json' } };
+            if (body) opts.body = JSON.stringify(body);
+            const res = await fetch(endpoint, opts);
+            const data = await res.json();
+            if (!res.ok) {
+                if (res.status === 403 && data.error === 'access_denied') {
+                    alert(data.message);
+                    window.location.href = '/login.html';
+                    throw new Error('blocked');
+                }
+                throw new Error(data.error || 'Terjadi kesalahan');
+            }
+            return data;
+        }
+
+        async function loadData() {
+            try {
+                const [koloniRes, keuanganRes] = await Promise.all([
+                    apiCall('/api/koloni'),
+                    apiCall('/api/keuangan')
+                ]);
+                koloniList = koloniRes.koloni || [];
+                keuanganList = keuanganRes.keuangan || [];
+                renderAll();
+            } catch (e) {
+                console.error('Load error:', e);
+            }
+        }
+
+        // ========================================================================
+        // RENDER
+        // ========================================================================
+        function renderAll() {
+            renderStats();
+            renderKoloni();
+            renderTransaksi();
+        }
+
+        function renderStats() {
+            document.getElementById('totalKoloni').textContent = koloniList.length;
+            const totalPop = koloniList.reduce((s, k) => s + (k.populasi || 0), 0);
+            document.getElementById('totalPopulasi').textContent = totalPop;
+            const pemasukan = keuanganList.filter(t => t.tipe === 'pemasukan').reduce((s, t) => s + t.nominal, 0);
+            const pengeluaran = keuanganList.filter(t => t.tipe === 'pengeluaran').reduce((s, t) => s + t.nominal, 0);
+            document.getElementById('totalSaldo').textContent = formatRupiah(pemasukan - pengeluaran);
+            const totalPakan = keuanganList.filter(t => t.kategori === 'pakan').reduce((s, t) => s + t.nominal, 0);
+            document.getElementById('rataPakan').textContent = totalPop > 0 ? formatRupiah(Math.round(totalPakan / totalPop)) : 'Rp0';
+        }
+
+        function renderKoloni() {
+            const c = document.getElementById('daftarKoloni');
+            if (koloniList.length === 0) {
+                c.innerHTML = '<div class="empty-state"><div class="icon">🐣</div><p>Belum ada koloni.</p></div>';
+                return;
+            }
+            c.innerHTML = koloniList.map(k => {
+                const umur = hitungUmurHari(k.tanggal_lahir);
+                const saran = getSaranPakan(umur);
+                let saranHtml = '';
+                if (saran) {
+                    const rekomKg = saran.rataGram / 1000;
+                    const status = k.pakan_per_hari > 0 ? (Math.abs(k.pakan_per_hari - rekomKg) < 0.05 ? '✅ Sesuai' : (k.pakan_per_hari > rekomKg ? '⚠️ Berlebih' : '⚠️ Kurang')) : '💡 Belum diisi';
+                    saranHtml = `<div class="saran-pakan"><strong>📊 Saran (${saran.fase})</strong><br>${saran.rataGram} gram/ekor/hari (${rekomKg.toFixed(3)} kg)<br>Aktual: ${k.pakan_per_hari > 0 ? k.pakan_per_hari.toFixed(2)+' kg' : '-'} — ${status}</div>`;
+                }
+                return `<div class="koloni-item">
+                    <div class="nama">${k.nama}</div>
+                    <div class="detail"><span>📅 ${k.tanggal_lahir}</span><span>⏱ ${hitungUmur(k.tanggal_lahir)}</span><span>🐔 ${k.populasi} ekor</span></div>
+                    ${saranHtml}
+                    <div class="actions">
+                        <button class="btn btn-danger btn-sm" onclick="hapusKoloni('${k.id}')">🗑 Hapus</button>
+                        ${saran ? `<button class="btn btn-info btn-sm" onclick="terapkanSaran('${k.id}', ${saran.rataGram/1000})">💡 Gunakan Saran</button>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderTransaksi() {
+            const c = document.getElementById('daftarTransaksi');
+            if (keuanganList.length === 0) {
+                c.innerHTML = '<div class="empty-state"><div class="icon">💳</div><p>Belum ada transaksi.</p></div>';
+                return;
+            }
+            const sorted = [...keuanganList].sort((a,b) => b.tanggal.localeCompare(a.tanggal));
+            c.innerHTML = sorted.map(t => {
+                const plus = t.tipe === 'pemasukan';
+                return `<div class="transaksi-item ${t.tipe}">
+                    <div><strong>${t.kategori}</strong><br><small>${t.tanggal} ${t.deskripsi ? '— '+t.deskripsi : ''}</small></div>
+                    <div><span class="nominal ${plus?'plus':'minus'}">${plus?'+':'-'} ${formatRupiah(t.nominal)}</span>
+                    <button class="btn btn-danger btn-sm" onclick="hapusTransaksi('${t.id}')" style="margin-left:8px;padding:2px 8px;font-size:11px;">✕</button></div>
+                </div>`;
+            }).join('');
+        }
+
+        // ========================================================================
+        // ACTIONS
+        // ========================================================================
+        window.hapusKoloni = async (id) => {
+            if (!confirm('Yakin hapus koloni ini?')) return;
+            try {
+                await apiCall(`/api/koloni/${id}`, 'DELETE');
+                await loadData();
+            } catch (e) { alert(e.message); }
+        };
+
+        window.terapkanSaran = async (id, kg) => {
+            try {
+                // Update via edit? Kita perlu endpoint edit. Untuk sementara, hapus lalu tambah ulang atau gunakan endpoint PUT.
+                // Karena belum ada endpoint edit, kita skip dulu atau implementasi sederhana.
+                alert('Fitur edit akan segera hadir. Sementara, hapus dan tambah ulang dengan nilai pakan ' + kg.toFixed(3) + ' kg');
+            } catch (e) { alert(e.message); }
+        };
+
+        window.hapusTransaksi = async (id) => {
+            if (!confirm('Hapus transaksi ini?')) return;
+            try {
+                await apiCall(`/api/keuangan/${id}`, 'DELETE');
+                await loadData();
+            } catch (e) { alert(e.message); }
+        };
+
+        // ========================================================================
+        // MODAL
+        // ========================================================================
+        const modal = document.getElementById('modalKoloni');
+        document.getElementById('btnTambahKoloni').onclick = () => {
+            document.getElementById('modalTitle').textContent = 'Tambah Koloni';
+            document.getElementById('formNama').value = '';
+            document.getElementById('formTanggal').value = new Date().toISOString().slice(0,10);
+            document.getElementById('formPopulasi').value = '';
+            document.getElementById('formPakan').value = '';
+            modal.classList.add('show');
+        };
+        document.getElementById('modalClose').onclick = () => modal.classList.remove('show');
+        modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
+
+        document.getElementById('btnSimpanKoloni').onclick = async () => {
+            const nama = document.getElementById('formNama').value;
+            const tanggal = document.getElementById('formTanggal').value;
+            const populasi = document.getElementById('formPopulasi').value;
+            const pakan = document.getElementById('formPakan').value;
+            if (!nama || !tanggal) return alert('Nama dan tanggal wajib diisi');
+            try {
+                await apiCall('/api/koloni', 'POST', { nama, tanggalLahir: tanggal, populasi, pakanPerHari: pakan });
+                modal.classList.remove('show');
+                await loadData();
+            } catch (e) { alert(e.message); }
+        };
+
+        // ========================================================================
+        // TRANSAKSI
+        // ========================================================================
+        document.getElementById('btnSimpanTrx').onclick = async () => {
+            const tipe = document.getElementById('trxTipe').value;
+            const kategori = document.getElementById('trxKategori').value;
+            const nominal = document.getElementById('trxNominal').value;
+            const tanggal = document.getElementById('trxTanggal').value;
+            const deskripsi = document.getElementById('trxDeskripsi').value;
+            if (!nominal || parseInt(nominal) <= 0) return alert('Nominal harus > 0');
+            if (!tanggal) return alert('Tanggal wajib diisi');
+            try {
+                await apiCall('/api/keuangan', 'POST', { tipe, kategori, nominal, tanggal, deskripsi });
+                document.getElementById('trxNominal').value = '';
+                document.getElementById('trxDeskripsi').value = '';
+                await loadData();
+            } catch (e) { alert(e.message); }
+        };
+
+        // ========================================================================
+        // TAB & FOOTER
+        // ========================================================================
+        document.querySelectorAll('.tab-nav button').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            };
+        });
+
+        document.getElementById('footerTelegramBtn').onclick = () => {
+            window.open('https://t.me/trenadmvpn', '_blank');
+        };
+
+        document.getElementById('btnLogout').onclick = async () => {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        };
+
+        // ========================================================================
+        // INIT
+        // ========================================================================
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('trxTanggal').value = new Date().toISOString().slice(0,10);
+            try {
+                const me = await apiCall('/api/auth/me');
+                if (!me.user) { window.location.href = '/login.html'; return; }
+                if (me.blocked) { alert(me.message); window.location.href = '/login.html'; return; }
+                if (me.user.role === 'admin') { window.location.href = '/admin.html'; return; }
+                currentUser = me.user;
+                await loadData();
+            } catch (e) { window.location.href = '/login.html'; }
+        });
+    </script>
+</body>
+</html>
