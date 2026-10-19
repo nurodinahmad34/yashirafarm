@@ -5,7 +5,7 @@ compatibility_date = "2026-10-19"
 [[d1_databases]]
 binding = "DB"
 database_name = "yashirafarm-db"
-database_id = "MASUKKAN_DATABASE_ID_ANDA"
+database_id = "1293c8a9-aa88-4b28-a32b-028714fff331"
 
 [assets]
 directory = "./public"
