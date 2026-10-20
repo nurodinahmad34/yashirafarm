@@ -4,30 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - YashiraFarm</title>
+    <link rel="icon" type="image/webp" href="/yashirafarm-webp.webp">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7f5; color: #1a1a1a; padding: 16px; }
+        :root {
+            --primary: #0F4D43; --primary-dark: #09332c; --accent: #F9B823;
+            --danger: #c62828; --success: #2e7d32; --bg: #f8f9fa; --text: #333; --text-light: #666;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); padding: 16px; }
         .container { max-width: 900px; margin: 0 auto; }
-        h1 { color: #2e7d32; margin-bottom: 8px; }
-        .sub { color: #888; margin-bottom: 24px; }
-        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .card h2 { font-size: 18px; margin-bottom: 16px; color: #2e7d32; }
+        h1 { color: var(--primary); margin-bottom: 8px; }
+        .sub { color: var(--text-light); margin-bottom: 24px; }
+        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px; border-top: 4px solid var(--primary); }
+        .card h2 { font-size: 18px; margin-bottom: 16px; color: var(--primary); }
         .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 4px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-light); margin-bottom: 4px; }
         .form-group textarea, .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; }
-        .form-group textarea:focus, .form-group input:focus, .form-group select:focus { outline: none; border-color: #2e7d32; }
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; }
-        .btn-primary { background: #2e7d32; color: white; }
-        .btn-danger { background: #c62828; color: white; }
-        .btn-success { background: #4caf50; color: white; }
+        .form-group textarea:focus, .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
         .btn-sm { padding: 4px 12px; font-size: 12px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
-        th { background: #f5f7f5; font-weight: 600; color: #555; }
-        .status-active { color: #2e7d32; font-weight: 600; }
-        .status-blocked { color: #c62828; font-weight: 600; }
-        .logout { background: #ffebee; color: #c62828; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-bottom: 16px; }
-        .success-msg { background: #e8f5e9; color: #2e7d32; padding: 12px; border-radius: 8px; margin-bottom: 16px; display: none; }
+        th { background: #f5f5f5; font-weight: 600; color: var(--text-light); }
+        .status-active { color: var(--success); font-weight: 700; }
+        .status-blocked { color: var(--danger); font-weight: 700; }
+        .logout { background: #ffebee; color: var(--danger); border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 16px; }
+        .success-msg { background: #e8f5e9; color: var(--success); padding: 12px; border-radius: 8px; margin-bottom: 16px; display: none; }
     </style>
 </head>
 <body>
@@ -35,20 +40,15 @@
         <h1>👑 Admin Panel</h1>
         <p class="sub">Kelola pengguna dan pengaturan aplikasi</p>
         <button class="logout" id="btnLogout">🚪 Logout</button>
-
         <div class="success-msg" id="successMsg"></div>
 
-        <!-- EDIT TEKS SUSPEND -->
         <div class="card">
             <h2>📝 Edit Teks Suspend</h2>
-            <p style="font-size:13px;color:#888;margin-bottom:12px;">Teks ini akan muncul saat pengguna yang diblokir mencoba login.</p>
-            <div class="form-group">
-                <textarea id="suspendMessage" rows="4"></textarea>
-            </div>
+            <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">Teks ini akan muncul saat pengguna yang diblokir mencoba login.</p>
+            <div class="form-group"><textarea id="suspendMessage" rows="4"></textarea></div>
             <button class="btn btn-primary" id="btnSaveMessage">Simpan Teks</button>
         </div>
 
-        <!-- DAFTAR USER -->
         <div class="card">
             <h2>👥 Daftar Pengguna</h2>
             <div style="overflow-x:auto;">
@@ -70,12 +70,7 @@
             return data;
         }
 
-        function showSuccess(msg) {
-            const el = document.getElementById('successMsg');
-            el.textContent = msg;
-            el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 3000);
-        }
+        function showSuccess(msg) { const el = document.getElementById('successMsg'); el.textContent = msg; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); }
 
         async function loadUsers() {
             try {
@@ -83,16 +78,9 @@
                 const tbody = document.querySelector('#userTable tbody');
                 tbody.innerHTML = (data.users || []).map(u => `
                     <tr>
-                        <td>${u.email}</td>
-                        <td>${u.nama || '-'}</td>
-                        <td>${u.role}</td>
+                        <td>${u.email}</td><td>${u.nama || '-'}</td><td>${u.role}</td>
                         <td class="status-${u.status}">${u.status === 'active' ? '✅ Aktif' : '🚫 Diblokir'}</td>
-                        <td>
-                            ${u.status === 'active' 
-                                ? `<button class="btn btn-danger btn-sm" onclick="ubahStatus('${u.id}', 'blocked')">Blokir</button>`
-                                : `<button class="btn btn-success btn-sm" onclick="ubahStatus('${u.id}', 'active')">Aktifkan</button>`
-                            }
-                        </td>
+                        <td>${u.status === 'active' ? `<button class="btn btn-danger btn-sm" onclick="ubahStatus('${u.id}', 'blocked')">Blokir</button>` : `<button class="btn btn-success btn-sm" onclick="ubahStatus('${u.id}', 'active')">Aktifkan</button>`}</td>
                     </tr>
                 `).join('');
             } catch (e) { alert(e.message); }
@@ -100,43 +88,26 @@
 
         window.ubahStatus = async (userId, status) => {
             if (!confirm(`Yakin ${status === 'blocked' ? 'memblokir' : 'mengaktifkan'} user ini?`)) return;
-            try {
-                await apiCall('/api/admin/users/status', 'PUT', { userId, status });
-                showSuccess(`Status user diubah menjadi ${status}`);
-                await loadUsers();
-            } catch (e) { alert(e.message); }
+            try { await apiCall('/api/admin/users/status', 'PUT', { userId, status }); showSuccess(`Status user diubah menjadi ${status}`); await loadUsers(); } catch (e) { alert(e.message); }
         };
 
         async function loadMessage() {
-            try {
-                const data = await apiCall('/api/admin/suspend-message');
-                document.getElementById('suspendMessage').value = data.message || '';
-            } catch (e) { alert(e.message); }
+            try { const data = await apiCall('/api/admin/suspend-message'); document.getElementById('suspendMessage').value = data.message || ''; } catch (e) { alert(e.message); }
         }
 
         document.getElementById('btnSaveMessage').onclick = async () => {
             const message = document.getElementById('suspendMessage').value;
             if (!message) return alert('Pesan tidak boleh kosong');
-            try {
-                await apiCall('/api/admin/suspend-message', 'PUT', { message });
-                showSuccess('Teks suspend berhasil diperbarui');
-            } catch (e) { alert(e.message); }
+            try { await apiCall('/api/admin/suspend-message', 'PUT', { message }); showSuccess('Teks suspend berhasil diperbarui'); } catch (e) { alert(e.message); }
         };
 
-        document.getElementById('btnLogout').onclick = async () => {
-            await fetch('/api/auth/logout', { method: 'POST' });
-            window.location.href = '/login.html';
-        };
+        document.getElementById('btnLogout').onclick = async () => { await fetch('/api/auth/logout', { method: 'POST' }); window.location.href = '/login.html'; };
 
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const me = await apiCall('/api/auth/me');
-                if (!me.user || me.user.role !== 'admin') {
-                    window.location.href = '/login.html';
-                    return;
-                }
-                await loadUsers();
-                await loadMessage();
+                if (!me.user || me.user.role !== 'admin') { window.location.href = '/login.html'; return; }
+                await loadUsers(); await loadMessage();
             } catch (e) { window.location.href = '/login.html'; }
         });
     </script>
