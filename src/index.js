@@ -138,7 +138,6 @@ export default {
         // ================================================================
         // STATIC ASSETS (HTML, CSS, JS)
         // ================================================================
-        // Cek apakah file ada di assets
         const asset = await env.ASSETS.fetch(request);
         if (asset.status !== 404) {
             return asset;
@@ -168,7 +167,6 @@ async function handleAPI(request, env, path, method) {
                 return jsonResponse({ error: 'Password minimal 6 karakter' }, 400);
             }
             
-            // Cek email sudah ada
             const existing = await env.DB.prepare(
                 'SELECT id FROM users WHERE email = ?'
             ).bind(email).first();
@@ -176,7 +174,6 @@ async function handleAPI(request, env, path, method) {
                 return jsonResponse({ error: 'Email sudah terdaftar' }, 400);
             }
             
-            // Cek apakah ini user pertama (jadi admin)
             const userCount = await env.DB.prepare('SELECT COUNT(*) as c FROM users').first();
             const role = userCount.c === 0 ? 'admin' : 'member';
             
@@ -219,7 +216,6 @@ async function handleAPI(request, env, path, method) {
                 return jsonResponse({ error: 'Email atau password salah' }, 401);
             }
             
-            // CEK STATUS USER (FITUR SUSPEND/BLOKIR)
             const statusCheck = await checkUserStatus(user, env);
             if (!statusCheck.allowed) {
                 return jsonResponse({ 
@@ -228,7 +224,6 @@ async function handleAPI(request, env, path, method) {
                 }, 403);
             }
             
-            // Buat session
             const sessionId = generateId();
             const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
             
@@ -269,7 +264,7 @@ async function handleAPI(request, env, path, method) {
     }
 
     // ----------------------------------------------------------------
-    // AUTH: ME (Cek user yang sedang login)
+    // AUTH: ME
     // ----------------------------------------------------------------
     if (path === '/api/auth/me' && method === 'GET') {
         const user = await getUserFromSession(request, env);
@@ -301,7 +296,7 @@ async function handleAPI(request, env, path, method) {
     }
 
     // ----------------------------------------------------------------
-    // KOLONI: POST (Tambah)
+    // KOLONI: POST
     // ----------------------------------------------------------------
     if (path === '/api/koloni' && method === 'POST') {
         const auth = await requireAuth(request, env);
@@ -359,7 +354,7 @@ async function handleAPI(request, env, path, method) {
     }
 
     // ----------------------------------------------------------------
-    // KEUANGAN: POST (Tambah)
+    // KEUANGAN: POST
     // ----------------------------------------------------------------
     if (path === '/api/keuangan' && method === 'POST') {
         const auth = await requireAuth(request, env);
@@ -400,6 +395,25 @@ async function handleAPI(request, env, path, method) {
     }
 
     // ----------------------------------------------------------------
+    // USER: HAPUS SEMUA DATA (RESET) -> INI FITUR BARU YANG DITAMBAHKAN
+    // ----------------------------------------------------------------
+    if (path === '/api/user/reset' && method === 'DELETE') {
+        const auth = await requireAuth(request, env);
+        if (auth.error) return auth.error;
+        
+        const statusCheck = await checkUserStatus(auth.user, env);
+        if (!statusCheck.allowed) return jsonResponse({ error: 'access_denied', message: statusCheck.message }, 403);
+        
+        // Menghapus semua data koloni dan keuangan milik user tersebut
+        await env.DB.batch([
+            env.DB.prepare('DELETE FROM koloni WHERE user_id = ?').bind(auth.user.id),
+            env.DB.prepare('DELETE FROM keuangan WHERE user_id = ?').bind(auth.user.id)
+        ]);
+        
+        return jsonResponse({ message: 'Semua data berhasil dihapus' });
+    }
+
+    // ----------------------------------------------------------------
     // ADMIN: GET SEMUA USER
     // ----------------------------------------------------------------
     if (path === '/api/admin/users' && method === 'GET') {
@@ -414,7 +428,7 @@ async function handleAPI(request, env, path, method) {
     }
 
     // ----------------------------------------------------------------
-    // ADMIN: UPDATE STATUS USER (SUSPEND/BLOKIR/AKTIF)
+    // ADMIN: UPDATE STATUS USER
     // ----------------------------------------------------------------
     if (path === '/api/admin/users/status' && method === 'PUT') {
         const auth = await requireAdmin(request, env);
