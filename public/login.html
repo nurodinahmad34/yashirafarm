@@ -4,74 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - YashiraFarm</title>
+    <link rel="icon" type="image/webp" href="/yashirafarm-webp.webp">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .card { background: white; padding: 32px; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        .card h2 { text-align: center; color: #2e7d32; margin-bottom: 8px; }
-        .card p.sub { text-align: center; color: #888; margin-bottom: 24px; font-size: 0.9em; }
+        :root {
+            --primary: #0F4D43; --primary-dark: #09332c; --accent: #F9B823;
+            --bg: #f8f9fa; --text: #333; --text-light: #666;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .card { background: white; padding: 32px; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); width: 100%; max-width: 400px; border-top: 5px solid var(--primary); }
+        .card h2 { text-align: center; color: var(--primary); margin-bottom: 8px; }
+        .card p.sub { text-align: center; color: var(--text-light); margin-bottom: 24px; font-size: 0.9em; }
         .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 0.9em; font-weight: 600; color: #555; margin-bottom: 4px; }
+        .form-group label { display: block; font-size: 0.9em; font-weight: 600; color: var(--text-light); margin-bottom: 4px; }
         .form-group input { width: 100%; padding: 12px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; }
-        .form-group input:focus { outline: none; border-color: #2e7d32; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; }
-        .btn-primary { background: #2e7d32; color: white; }
-        .btn-primary:hover { background: #1b5e20; }
-        .toggle { text-align: center; margin-top: 16px; font-size: 0.9em; color: #555; }
-        .toggle a { color: #2e7d32; font-weight: 600; cursor: pointer; }
+        .form-group input:focus { outline: none; border-color: var(--primary); }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1em; font-weight: 700; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .toggle { text-align: center; margin-top: 16px; font-size: 0.9em; color: var(--text-light); }
+        .toggle a { color: var(--primary); font-weight: 700; cursor: pointer; }
         .error { background: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9em; display: none; }
         .success { background: #e8f5e9; color: #2e7d32; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9em; display: none; }
         .back { text-align: center; margin-top: 16px; }
-        .back a { color: #888; font-size: 0.85em; text-decoration: none; }
+        .back a { color: var(--text-light); font-size: 0.85em; text-decoration: none; }
     </style>
 </head>
 <body>
     <div class="card">
         <h2 id="formTitle">🐔 YashiraFarm</h2>
         <p class="sub" id="formSub">Masuk untuk mengakses data peternakan Anda</p>
-
         <div class="error" id="errorMsg"></div>
         <div class="success" id="successMsg"></div>
 
-        <!-- FORM LOGIN -->
         <div id="loginForm">
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="loginEmail" placeholder="email@anda.com">
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="loginPassword" placeholder="Password">
-            </div>
+            <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="email@anda.com"></div>
+            <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="Password"></div>
             <button class="btn btn-primary" id="btnLogin">Masuk</button>
-            <div class="toggle">
-                Belum punya akun? <a id="showRegister">Daftar</a>
-            </div>
+            <div class="toggle">Belum punya akun? <a id="showRegister">Daftar</a></div>
         </div>
 
-        <!-- FORM REGISTER -->
         <div id="registerForm" style="display:none;">
-            <div class="form-group">
-                <label>Nama Lengkap</label>
-                <input type="text" id="regNama" placeholder="Nama Anda">
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="regEmail" placeholder="email@anda.com">
-            </div>
-            <div class="form-group">
-                <label>Password (min. 6 karakter)</label>
-                <input type="password" id="regPassword" placeholder="Password">
-            </div>
+            <div class="form-group"><label>Nama Lengkap</label><input type="text" id="regNama" placeholder="Nama Anda"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="email@anda.com"></div>
+            <div class="form-group"><label>Password (min. 6 karakter)</label><input type="password" id="regPassword" placeholder="Password"></div>
             <button class="btn btn-primary" id="btnRegister">Daftar</button>
-            <div class="toggle">
-                Sudah punya akun? <a id="showLogin">Masuk</a>
-            </div>
+            <div class="toggle">Sudah punya akun? <a id="showLogin">Masuk</a></div>
         </div>
-
-        <div class="back">
-            <a href="/">← Kembali ke Beranda</a>
-        </div>
+        <div class="back"><a href="/">← Kembali ke Beranda</a></div>
     </div>
 
     <script>
@@ -82,94 +62,38 @@
         const formTitle = document.getElementById('formTitle');
         const formSub = document.getElementById('formSub');
 
-        function showError(msg) {
-            errorMsg.textContent = msg;
-            errorMsg.style.display = 'block';
-            successMsg.style.display = 'none';
-            setTimeout(() => errorMsg.style.display = 'none', 5000);
-        }
+        function showError(msg) { errorMsg.textContent = msg; errorMsg.style.display = 'block'; successMsg.style.display = 'none'; setTimeout(() => errorMsg.style.display = 'none', 5000); }
+        function showSuccess(msg) { successMsg.textContent = msg; successMsg.style.display = 'block'; errorMsg.style.display = 'none'; setTimeout(() => successMsg.style.display = 'none', 5000); }
 
-        function showSuccess(msg) {
-            successMsg.textContent = msg;
-            successMsg.style.display = 'block';
-            errorMsg.style.display = 'none';
-            setTimeout(() => successMsg.style.display = 'none', 5000);
-        }
+        document.getElementById('showRegister').onclick = () => { loginForm.style.display = 'none'; registerForm.style.display = 'block'; formTitle.textContent = 'Daftar Akun'; formSub.textContent = 'Buat akun untuk mulai mencatat'; };
+        document.getElementById('showLogin').onclick = () => { registerForm.style.display = 'none'; loginForm.style.display = 'block'; formTitle.textContent = '🐔 YashiraFarm'; formSub.textContent = 'Masuk untuk mengakses data peternakan Anda'; };
 
-        // Toggle forms
-        document.getElementById('showRegister').onclick = () => {
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
-            formTitle.textContent = 'Daftar Akun';
-            formSub.textContent = 'Buat akun untuk mulai mencatat';
-        };
-        document.getElementById('showLogin').onclick = () => {
-            registerForm.style.display = 'none';
-            loginForm.style.display = 'block';
-            formTitle.textContent = '🐔 YashiraFarm';
-            formSub.textContent = 'Masuk untuk mengakses data peternakan Anda';
-        };
-
-        // LOGIN
         document.getElementById('btnLogin').onclick = async () => {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             if (!email || !password) return showError('Email dan password wajib diisi');
-
             try {
-                const res = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
+                const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
                 const data = await res.json();
-
-                if (!res.ok) {
-                    if (data.error === 'access_denied') {
-                        alert(data.message);
-                    } else {
-                        showError(data.error || 'Login gagal');
-                    }
-                    return;
-                }
-
+                if (!res.ok) { if (data.error === 'access_denied') { alert(data.message); } else { showError(data.error || 'Login gagal'); } return; }
                 showSuccess('Login berhasil! Mengalihkan...');
-                setTimeout(() => {
-                    window.location.href = data.user.role === 'admin' ? '/admin.html' : '/member.html';
-                }, 1000);
-            } catch (e) {
-                showError('Terjadi kesalahan jaringan');
-            }
+                setTimeout(() => { window.location.href = data.user.role === 'admin' ? '/admin.html' : '/member.html'; }, 1000);
+            } catch (e) { showError('Terjadi kesalahan jaringan'); }
         };
 
-        // REGISTER
         document.getElementById('btnRegister').onclick = async () => {
             const nama = document.getElementById('regNama').value;
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
             if (!email || !password) return showError('Email dan password wajib diisi');
             if (password.length < 6) return showError('Password minimal 6 karakter');
-
             try {
-                const res = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, nama })
-                });
+                const res = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password, nama }) });
                 const data = await res.json();
-
-                if (!res.ok) {
-                    showError(data.error || 'Registrasi gagal');
-                    return;
-                }
-
+                if (!res.ok) { showError(data.error || 'Registrasi gagal'); return; }
                 showSuccess('Registrasi berhasil! Silakan login.');
-                setTimeout(() => {
-                    document.getElementById('showLogin').click();
-                }, 1500);
-            } catch (e) {
-                showError('Terjadi kesalahan jaringan');
-            }
+                setTimeout(() => { document.getElementById('showLogin').click(); }, 1500);
+            } catch (e) { showError('Terjadi kesalahan jaringan'); }
         };
     </script>
 </body>
