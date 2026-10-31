@@ -236,9 +236,7 @@ async function handleAPI(request, env, path, method) {
         return jsonResponse({ message: 'Semua data berhasil dihapus' });
     }
 
-    // ----------------------------------------------------------------
     // ADMIN: GET SEMUA USER (DENGAN STATISTIK)
-    // ----------------------------------------------------------------
     if (path === '/api/admin/users' && method === 'GET') {
         const auth = await requireAdmin(request, env);
         if (auth.error) return auth.error;
@@ -251,15 +249,12 @@ async function handleAPI(request, env, path, method) {
         return jsonResponse({ users: users.results || [] });
     }
 
-    // ----------------------------------------------------------------
     // ADMIN: HAPUS DATA MEMBER (RESET OLEH ADMIN)
-    // ----------------------------------------------------------------
     if (path === '/api/admin/users/reset' && method === 'DELETE') {
         const auth = await requireAdmin(request, env);
         if (auth.error) return auth.error;
         const { userId } = await request.json();
         if (!userId) return jsonResponse({ error: 'User ID wajib diisi' }, 400);
-        
         await env.DB.batch([
             env.DB.prepare('DELETE FROM koloni WHERE user_id = ?').bind(userId),
             env.DB.prepare('DELETE FROM keuangan WHERE user_id = ?').bind(userId)
@@ -293,32 +288,6 @@ async function handleAPI(request, env, path, method) {
         if (!message) return jsonResponse({ error: 'Pesan tidak boleh kosong' }, 400);
         await env.DB.prepare('INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)').bind('suspend_message', message).run();
         return jsonResponse({ message: 'Teks suspend diperbarui' });
-    }
-
-    // ADMIN: UPLOAD GAMBAR POPUP
-    if (path === '/api/admin/popup/upload' && method === 'POST') {
-        const auth = await requireAdmin(request, env);
-        if (auth.error) return auth.error;
-        try {
-            const formData = await request.formData();
-            const file = formData.get('image');
-            if (!file) return jsonResponse({ error: 'File tidak ditemukan' }, 400);
-            const fileName = `popup-${Date.now()}.${file.name.split('.').pop()}`;
-            await env.BUCKET.put(fileName, file.stream(), { httpMetadata: { contentType: file.type } });
-            return jsonResponse({ message: 'Upload berhasil', imageUrl: `/api/public/image/${fileName}` });
-        } catch (e) { return jsonResponse({ error: 'Gagal upload: ' + e.message }, 500); }
-    }
-
-    // PUBLIC: LIHAT GAMBAR
-    if (path.startsWith('/api/public/image/') && method === 'GET') {
-        const fileName = path.split('/').pop();
-        const object = await env.BUCKET.get(fileName);
-        if (!object) return new Response('Gambar tidak ditemukan', { status: 404 });
-        const headers = new Headers();
-        object.writeHttpMetadata(headers);
-        headers.set('etag', object.httpEtag);
-        headers.set('Cache-Control', 'public, max-age=86400');
-        return new Response(object.body, { headers });
     }
 
     // ADMIN: SIMPAN SETTING POPUP
