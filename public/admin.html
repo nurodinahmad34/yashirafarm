@@ -7,12 +7,9 @@
     <link rel="icon" type="image/webp" href="/yashirafarm-webp.webp">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #0F4D43; --primary-dark: #09332c; --accent: #F9B823;
-            --danger: #c62828; --success: #2e7d32; --bg: #f8f9fa; --text: #333; --text-light: #666;
-        }
+        :root { --primary: #0F4D43; --primary-dark: #09332c; --accent: #F9B823; --danger: #c62828; --success: #2e7d32; --bg: #f8f9fa; --text: #333; --text-light: #666; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); padding: 16px; }
-        .container { max-width: 900px; margin: 0 auto; }
+        .container { max-width: 1000px; margin: 0 auto; }
         h1 { color: var(--primary); margin-bottom: 8px; }
         .sub { color: var(--text-light); margin-bottom: 24px; }
         .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px; border-top: 4px solid var(--primary); }
@@ -25,35 +22,70 @@
         .btn-primary { background: var(--primary); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--accent); color: #000; }
         .btn-sm { padding: 4px 12px; font-size: 12px; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; }
         th { background: #f5f5f5; font-weight: 600; color: var(--text-light); }
         .status-active { color: var(--success); font-weight: 700; }
         .status-blocked { color: var(--danger); font-weight: 700; }
         .logout { background: #ffebee; color: var(--danger); border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 16px; }
         .success-msg { background: #e8f5e9; color: var(--success); padding: 12px; border-radius: 8px; margin-bottom: 16px; display: none; }
+        .badge { padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .badge-aktif { background: #e8f5e9; color: var(--success); }
+        .badge-pasif { background: #ffebee; color: var(--danger); }
+        .btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>👑 Admin Panel</h1>
-        <p class="sub">Kelola pengguna dan pengaturan aplikasi</p>
+        <p class="sub">Kelola pengguna, pengaturan aplikasi, dan pop-up</p>
         <button class="logout" id="btnLogout">🚪 Logout</button>
         <div class="success-msg" id="successMsg"></div>
 
         <div class="card">
             <h2>📝 Edit Teks Suspend</h2>
-            <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">Teks ini akan muncul saat pengguna yang diblokir mencoba login.</p>
-            <div class="form-group"><textarea id="suspendMessage" rows="4"></textarea></div>
+            <div class="form-group"><textarea id="suspendMessage" rows="3"></textarea></div>
             <button class="btn btn-primary" id="btnSaveMessage">Simpan Teks</button>
         </div>
 
         <div class="card">
-            <h2>👥 Daftar Pengguna</h2>
+            <h2>📢 Pengaturan Pop-up Informasi</h2>
+            <div class="form-group">
+                <label>Status Pop-up</label>
+                <select id="popupActive">
+                    <option value="false">Mati (Tidak Tampil)</option>
+                    <option value="true">Nyala (Tampil di Landing Page)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Gambar Iklan (Upload)</label>
+                <input type="file" id="popupImage" accept="image/*" style="padding: 8px;">
+                <input type="hidden" id="popupImageUrl">
+                <div id="currentImagePreview" style="margin-top: 10px; font-size: 12px; color: #666;"></div>
+            </div>
+            <div class="form-group">
+                <label>Link Tujuan (Jika iklan diklik)</label>
+                <input type="text" id="popupLink" placeholder="https://wa.me/... atau https://t.me/...">
+            </div>
+            <button class="btn btn-primary" id="btnSavePopup">Simpan Pengaturan Popup</button>
+        </div>
+
+        <div class="card">
+            <h2>👥 Daftar Pengguna & Aktivitas</h2>
             <div style="overflow-x:auto;">
                 <table id="userTable">
-                    <thead><tr><th>Email</th><th>Nama</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Nama</th>
+                            <th>Status</th>
+                            <th>Aktivitas</th>
+                            <th>Terakhir Aktif</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -72,17 +104,38 @@
 
         function showSuccess(msg) { const el = document.getElementById('successMsg'); el.textContent = msg; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); }
 
+        function formatTanggal(tglString) {
+            if (!tglString) return '-';
+            const d = new Date(tglString);
+            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
         async function loadUsers() {
             try {
                 const data = await apiCall('/api/admin/users');
                 const tbody = document.querySelector('#userTable tbody');
-                tbody.innerHTML = (data.users || []).map(u => `
+                tbody.innerHTML = (data.users || []).map(u => {
+                    const isAktif = u.total_transaksi > 0;
+                    const badgeClass = isAktif ? 'badge-aktif' : 'badge-pasif';
+                    const badgeText = isAktif ? '📝 Aktif' : '💤 Pasif';
+                    return `
                     <tr>
-                        <td>${u.email}</td><td>${u.nama || '-'}</td><td>${u.role}</td>
+                        <td>${u.email}</td>
+                        <td>${u.nama || '-'}</td>
                         <td class="status-${u.status}">${u.status === 'active' ? '✅ Aktif' : '🚫 Diblokir'}</td>
-                        <td>${u.status === 'active' ? `<button class="btn btn-danger btn-sm" onclick="ubahStatus('${u.id}', 'blocked')">Blokir</button>` : `<button class="btn btn-success btn-sm" onclick="ubahStatus('${u.id}', 'active')">Aktifkan</button>`}</td>
+                        <td style="text-align:center;"><span class="badge ${badgeClass}">${u.total_transaksi} trx</span> ${badgeText}</td>
+                        <td>${formatTanggal(u.aktivitas_terakhir)}</td>
+                        <td>
+                            <div class="btn-group">
+                                ${u.status === 'active' 
+                                    ? `<button class="btn btn-danger btn-sm" onclick="ubahStatus('${u.id}', 'blocked')">Blokir</button>`
+                                    : `<button class="btn btn-success btn-sm" onclick="ubahStatus('${u.id}', 'active')">Buka</button>`
+                                }
+                                <button class="btn btn-warning btn-sm" onclick="hapusDataMember('${u.id}', '${u.nama || u.email}')">Hapus Data</button>
+                            </div>
+                        </td>
                     </tr>
-                `).join('');
+                `}).join('');
             } catch (e) { alert(e.message); }
         }
 
@@ -91,8 +144,17 @@
             try { await apiCall('/api/admin/users/status', 'PUT', { userId, status }); showSuccess(`Status user diubah menjadi ${status}`); await loadUsers(); } catch (e) { alert(e.message); }
         };
 
+        window.hapusDataMember = async (userId, nama) => {
+            if (!confirm(`PERINGATAN: Hapus SEMUA data koloni & keuangan milik "${nama}"? Akun mereka akan tetap ada, hanya datanya yang di-reset.`)) return;
+            try { 
+                await apiCall('/api/admin/users/reset', 'DELETE', { userId }); 
+                showSuccess(`Data milik ${nama} berhasil dihapus permanen`); 
+                await loadUsers(); 
+            } catch (e) { alert(e.message); }
+        };
+
         async function loadMessage() {
-            try { const data = await apiCall('/api/admin/suspend-message'); document.getElementById('suspendMessage').value = data.message || ''; } catch (e) { alert(e.message); }
+            try { const data = await apiCall('/api/admin/suspend-message'); document.getElementById('suspendMessage').value = data.message || ''; } catch (e) { console.error(e); }
         }
 
         document.getElementById('btnSaveMessage').onclick = async () => {
@@ -101,13 +163,56 @@
             try { await apiCall('/api/admin/suspend-message', 'PUT', { message }); showSuccess('Teks suspend berhasil diperbarui'); } catch (e) { alert(e.message); }
         };
 
+        async function loadPopupSettings() {
+            try {
+                const data = await apiCall('/api/public/popup');
+                document.getElementById('popupActive').value = data.is_active ? 'true' : 'false';
+                document.getElementById('popupLink').value = data.link_url || '';
+                document.getElementById('popupImageUrl').value = data.image_url || '';
+                if (data.image_url) {
+                    document.getElementById('currentImagePreview').innerHTML = `Gambar saat ini: <a href="${data.image_url}" target="_blank">Lihat</a>`;
+                } else {
+                    document.getElementById('currentImagePreview').textContent = 'Belum ada gambar.';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        document.getElementById('btnSavePopup').onclick = async () => {
+            const btn = document.getElementById('btnSavePopup');
+            const fileInput = document.getElementById('popupImage');
+            let imageUrl = document.getElementById('popupImageUrl').value;
+            const isActive = document.getElementById('popupActive').value;
+            const linkUrl = document.getElementById('popupLink').value;
+
+            if (fileInput.files.length > 0) {
+                btn.textContent = 'Mengupload...'; btn.disabled = true;
+                const formData = new FormData();
+                formData.append('image', fileInput.files[0]);
+                try {
+                    const res = await fetch('/api/admin/popup/upload', { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error);
+                    imageUrl = data.imageUrl;
+                } catch (e) {
+                    alert('Gagal upload: ' + e.message); btn.textContent = 'Simpan Pengaturan Popup'; btn.disabled = false; return;
+                }
+            }
+
+            try {
+                await apiCall('/api/admin/popup', 'PUT', { is_active: isActive === 'true', image_url: imageUrl, link_url: linkUrl });
+                showSuccess('Pengaturan pop-up berhasil disimpan!');
+                await loadPopupSettings();
+            } catch (e) { alert(e.message); } 
+            finally { btn.textContent = 'Simpan Pengaturan Popup'; btn.disabled = false; fileInput.value = ''; }
+        };
+
         document.getElementById('btnLogout').onclick = async () => { await fetch('/api/auth/logout', { method: 'POST' }); window.location.href = '/login.html'; };
 
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const me = await apiCall('/api/auth/me');
                 if (!me.user || me.user.role !== 'admin') { window.location.href = '/login.html'; return; }
-                await loadUsers(); await loadMessage();
+                await loadUsers(); await loadMessage(); await loadPopupSettings();
             } catch (e) { window.location.href = '/login.html'; }
         });
     </script>
