@@ -4,36 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YashiraFarm - Kelola Peternakan Lebih Mudah</title>
-    <!-- Icon Web -->
     <link rel="icon" type="image/webp" href="/yashirafarm-webp.webp">
-    <link rel="apple-touch-icon" href="/yashirafarm-webp.webp">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #0F4D43;
-            --primary-dark: #09332c;
-            --accent: #F9B823;
-            --bg: #FFFFFF;
-            --text: #333333;
-            --text-light: #666666;
-            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+        :root { --primary: #0F4D43; --primary-dark: #09332c; --accent: #F9B823; --bg: #FFFFFF; --text: #333333; --text-light: #666666; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; }
         
-        /* Header / Navbar */
         .navbar { background: var(--primary); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; color: white; position: sticky; top: 0; z-index: 100; }
         .navbar h1 { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px;}
         .navbar img { height: 30px; width: auto; border-radius: 4px; }
         .btn-nav { background: var(--accent); color: var(--primary-dark); padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 14px; }
         
-        /* Hero Section */
         .hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
         .hero h2 { font-size: 2.2em; margin-bottom: 20px; line-height: 1.2; }
         .hero p { font-size: 1.1em; opacity: 0.9; max-width: 600px; margin: 0 auto 30px; }
         .btn-hero { background: var(--accent); color: var(--primary-dark); padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1.1em; display: inline-block; transition: transform 0.2s; }
         .btn-hero:hover { transform: scale(1.05); }
 
-        /* Content Section */
         .content { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
         .section-title { font-size: 1.8em; color: var(--primary); margin-bottom: 20px; text-align: center; }
         .card-list { display: flex; flex-direction: column; gap: 20px; }
@@ -43,31 +30,24 @@
         
         .quote-box { background: var(--primary); color: white; padding: 30px 20px; border-radius: 12px; text-align: center; margin: 40px 0; font-style: italic; font-size: 1.1em; border-left: 8px solid var(--accent); }
 
-        /* Footer */
         .footer { text-align: center; padding: 30px 20px; background: #f5f5f5; color: var(--text-light); font-size: 0.9em; margin-top: 40px; border-top: 3px solid var(--primary); }
         .footer a { color: var(--primary); font-weight: bold; text-decoration: none; }
         
-        @media (max-width: 600px) {
-            .hero h2 { font-size: 1.8em; }
-        }
+        @media (max-width: 600px) { .hero h2 { font-size: 1.8em; } }
     </style>
 </head>
 <body>
-
-    <!-- Navbar -->
     <div class="navbar">
         <h1><img src="/yashirafarm-webp.webp" alt="Logo"> YashiraFarm</h1>
         <a href="/login.html" class="btn-nav">Masuk / Daftar</a>
     </div>
 
-    <!-- Hero -->
     <div class="hero">
         <h2>Setiap ekor, setiap rupiah, tercatat rapi.</h2>
         <p>Kelola koloni, pakan, pemasukan, dan pengeluaran dalam satu pembukuan digital — tanpa kalkulator manual dan tanpa buku catatan yang gampang hilang.</p>
         <a href="/login.html" class="btn-hero">🟢 Buat Akun Gratis</a>
     </div>
 
-    <!-- Konten -->
     <div class="content">
         <h2 class="section-title">📝 Kenapa Harus Mencatat?</h2>
         <p style="text-align: center; margin-bottom: 30px; color: var(--text-light);">
@@ -77,42 +57,19 @@
         </p>
 
         <div class="card-list">
-            <div class="card">
-                <h3>🐔 Kelola Banyak Kandang Sekaligus</h3>
-                <p>Punya beberapa kelompok umur? Pisahkan datanya dengan mudah. Satu koloni, satu riwayat, satu laporan.</p>
-            </div>
-            <div class="card">
-                <h3>⏰ Tidak Perlu Hitung Manual</h3>
-                <p>Kapan ayam ini menetas? Berapa umurnya hari ini? Pakan berapa gram yang dibutuhkan hari ini? Semua terhitung otomatis.</p>
-            </div>
-            <div class="card">
-                <h3>💰 Setiap Rupiah Terlihat Jelas</h3>
-                <p>Pakan, obat, vaksin, penjualan telur, penjualan ayam — tidak ada yang terlewat. Tahu persis berapa yang masuk dan berapa yang keluar.</p>
-            </div>
-            <div class="card">
-                <h3>📊 Tahu Modal Per Ekor</h3>
-                <p>Total biaya dibagi jumlah ayam hidup. Angka yang sederhana, tapi itu adalah kunci keuntunganmu.</p>
-            </div>
-            <div class="card">
-                <h3>🔒 Datamu Aman di Sini</h3>
-                <p>Kamu yang pegang kendali. Bisa dilihat kapan saja, dan hanya kamu yang bisa melihatnya.</p>
-            </div>
+            <div class="card"><h3>🐔 Kelola Banyak Kandang Sekaligus</h3><p>Punya beberapa kelompok umur? Pisahkan datanya dengan mudah. Satu koloni, satu riwayat, satu laporan.</p></div>
+            <div class="card"><h3>⏰ Tidak Perlu Hitung Manual</h3><p>Kapan ayam ini menetas? Berapa umurnya hari ini? Pakan berapa gram yang dibutuhkan hari ini? Semua terhitung otomatis.</p></div>
+            <div class="card"><h3>💰 Setiap Rupiah Terlihat Jelas</h3><p>Pakan, obat, vaksin, penjualan telur, penjualan ayam — tidak ada yang terlewat. Tahu persis berapa yang masuk dan berapa yang keluar.</p></div>
+            <div class="card"><h3>📊 Tahu Modal Per Ekor</h3><p>Total biaya dibagi jumlah ayam hidup. Angka yang sederhana, tapi itu adalah kunci keuntunganmu.</p></div>
+            <div class="card"><h3>🔒 Datamu Aman di Sini</h3><p>Kamu yang pegang kendali. Bisa dilihat kapan saja, dan hanya kamu yang bisa melihatnya.</p></div>
         </div>
 
         <h2 class="section-title" style="margin-top: 50px;">🌾 Untuk Siapa YashiraFarm?</h2>
         <div class="card-list">
-            <div class="card">
-                <p>✅ Peternak pemula yang ingin belajar mencatat dengan benar</p>
-            </div>
-            <div class="card">
-                <p>✅ Peternak berpengalaman yang ingin catatannya lebih rapi dan tidak mudah hilang</p>
-            </div>
-            <div class="card">
-                <p>✅ Kelompok tani yang ingin satu standar pencatatan</p>
-            </div>
-            <div class="card">
-                <p>✅ Siapa pun yang percaya: ternak yang baik dimulai dari catatan yang baik</p>
-            </div>
+            <div class="card"><p>✅ Peternak pemula yang ingin belajar mencatat dengan benar</p></div>
+            <div class="card"><p>✅ Peternak berpengalaman yang ingin catatannya lebih rapi dan tidak mudah hilang</p></div>
+            <div class="card"><p>✅ Kelompok tani yang ingin satu standar pencatatan</p></div>
+            <div class="card"><p>✅ Siapa pun yang percaya: ternak yang baik dimulai dari catatan yang baik</p></div>
         </div>
 
         <h2 class="section-title" style="margin-top: 50px;">🚀 Mulai Sekarang, Tanpa Biaya Sepeser Pun</h2>
@@ -129,11 +86,48 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <div class="footer">
         <p>© 2026 YashiraFarm. Dibuat dengan ❤️ untuk Peternak Indonesia.</p>
         <p style="margin-top: 10px;"><a href="https://t.me/trenadmvpn" target="_blank">💬 Gabung Grup Telegram Kami</a></p>
     </div>
 
+    <!-- Popup Iklan -->
+    <div id="adsPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center; padding:20px;">
+        <div style="background:white; border-radius:16px; max-width:400px; width:100%; position:relative; overflow:hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+            <button onclick="tutupPopup()" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.5); color:white; border:none; width:30px; height:30px; border-radius:50%; font-size:16px; cursor:pointer; z-index:10; display:flex; justify-content:center; align-items:center;">✕</button>
+            <a id="popupLinkWrapper" href="#" target="_blank" style="display:block;">
+                <img id="popupImage" src="" alt="Informasi" style="width:100%; height:auto; display:block;">
+            </a>
+        </div>
+    </div>
+
+    <script>
+        async function cekPopup() {
+            if (sessionStorage.getItem('popup_closed') === 'true') return;
+            try {
+                const res = await fetch('/api/public/popup');
+                const data = await res.json();
+                if (data.is_active && data.image_url) {
+                    const popup = document.getElementById('adsPopup');
+                    const img = document.getElementById('popupImage');
+                    const linkWrapper = document.getElementById('popupLinkWrapper');
+                    img.src = data.image_url;
+                    if (data.link_url) {
+                        linkWrapper.href = data.link_url;
+                        linkWrapper.style.cursor = 'pointer';
+                    } else {
+                        linkWrapper.removeAttribute('href');
+                        linkWrapper.style.cursor = 'default';
+                    }
+                    setTimeout(() => { popup.style.display = 'flex'; }, 1000);
+                }
+            } catch (e) { console.log('Popup tidak dimuat', e); }
+        }
+        function tutupPopup() {
+            document.getElementById('adsPopup').style.display = 'none';
+            sessionStorage.setItem('popup_closed', 'true');
+        }
+        document.addEventListener('DOMContentLoaded', cekPopup);
+    </script>
 </body>
 </html>
