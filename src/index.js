@@ -155,6 +155,35 @@ async function handleAPI(request, env, path, method) {
         return jsonResponse({ user });
     }
 
+    // ----------------------------------------------------------------
+    // PUBLIC: GET SETTING POPUP (DIPINDAHKAN KE ATAS)
+    // ----------------------------------------------------------------
+    if (path === '/api/public/popup' && method === 'GET') {
+        const settings = await env.DB.prepare('SELECT key, value FROM popup_settings').all();
+        const result = { is_active: false, image_url: '', link_url: '' };
+        settings.results.forEach(row => {
+            if (row.key === 'is_active') result.is_active = row.value === 'true';
+            else if (row.key === 'image_url') result.image_url = row.value;
+            else if (row.key === 'link_url') result.link_url = row.value;
+        });
+        return jsonResponse(result);
+    }
+
+    // ----------------------------------------------------------------
+    // ADMIN: SIMPAN SETTING POPUP (DIPINDAHKAN KE ATAS)
+    // ----------------------------------------------------------------
+    if (path === '/api/admin/popup' && method === 'PUT') {
+        const auth = await requireAdmin(request, env);
+        if (auth.error) return auth.error;
+        const { is_active, image_url, link_url } = await request.json();
+        await env.DB.batch([
+            env.DB.prepare('UPDATE popup_settings SET value = ? WHERE key = ?').bind(String(is_active), 'is_active'),
+            env.DB.prepare('UPDATE popup_settings SET value = ? WHERE key = ?').bind(image_url || '', 'image_url'),
+            env.DB.prepare('UPDATE popup_settings SET value = ? WHERE key = ?').bind(link_url || '', 'link_url')
+        ]);
+        return jsonResponse({ message: 'Pengaturan popup disimpan' });
+    }
+
     // KOLONI: GET
     if (path === '/api/koloni' && method === 'GET') {
         const auth = await requireAuth(request, env);
@@ -288,31 +317,6 @@ async function handleAPI(request, env, path, method) {
         if (!message) return jsonResponse({ error: 'Pesan tidak boleh kosong' }, 400);
         await env.DB.prepare('INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)').bind('suspend_message', message).run();
         return jsonResponse({ message: 'Teks suspend diperbarui' });
-    }
-
-    // ADMIN: SIMPAN SETTING POPUP
-    if (path === '/api/admin/popup' && method === 'PUT') {
-        const auth = await requireAdmin(request, env);
-        if (auth.error) return auth.error;
-        const { is_active, image_url, link_url } = await request.json();
-        await env.DB.batch([
-            env.DB.prepare('UPDATE popup_settings SET value = ? WHERE key = ?').bind(String(is_active), 'is_active'),
-            env.DB.prepare('UPDATE popup_settings SET value = ? WHERE key = ?').bind(image_url || '', 'image_url'),
-            env.DB.prepare('UPDATE popup_settings SET value = ? WHERE key = ?').bind(link_url || '', 'link_url')
-        ]);
-        return jsonResponse({ message: 'Pengaturan popup disimpan' });
-    }
-
-    // PUBLIC: GET SETTING POPUP
-    if (path === '/api/public/popup' && method === 'GET') {
-        const settings = await env.DB.prepare('SELECT key, value FROM popup_settings').all();
-        const result = { is_active: false, image_url: '', link_url: '' };
-        settings.results.forEach(row => {
-            if (row.key === 'is_active') result.is_active = row.value === 'true';
-            else if (row.key === 'image_url') result.image_url = row.value;
-            else if (row.key === 'link_url') result.link_url = row.value;
-        });
-        return jsonResponse(result);
     }
 
     return jsonResponse({ error: 'Endpoint tidak ditemukan' }, 404);
