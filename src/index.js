@@ -155,9 +155,7 @@ async function handleAPI(request, env, path, method) {
         return jsonResponse({ user });
     }
 
-    // ----------------------------------------------------------------
-    // PUBLIC: GET SETTING POPUP (DIPINDAHKAN KE ATAS)
-    // ----------------------------------------------------------------
+    // PUBLIC: GET SETTING POPUP
     if (path === '/api/public/popup' && method === 'GET') {
         const settings = await env.DB.prepare('SELECT key, value FROM popup_settings').all();
         const result = { is_active: false, image_url: '', link_url: '' };
@@ -169,9 +167,7 @@ async function handleAPI(request, env, path, method) {
         return jsonResponse(result);
     }
 
-    // ----------------------------------------------------------------
-    // ADMIN: SIMPAN SETTING POPUP (DIPINDAHKAN KE ATAS)
-    // ----------------------------------------------------------------
+    // ADMIN: SIMPAN SETTING POPUP
     if (path === '/api/admin/popup' && method === 'PUT') {
         const auth = await requireAdmin(request, env);
         if (auth.error) return auth.error;
@@ -194,7 +190,7 @@ async function handleAPI(request, env, path, method) {
         return jsonResponse({ koloni: koloni.results || [] });
     }
 
-    // KOLONI: POST
+    // KOLONI: POST (Tambah)
     if (path === '/api/koloni' && method === 'POST') {
         const auth = await requireAuth(request, env);
         if (auth.error) return auth.error;
@@ -205,6 +201,25 @@ async function handleAPI(request, env, path, method) {
         const id = generateId();
         await env.DB.prepare('INSERT INTO koloni (id, user_id, nama, tanggal_lahir, populasi, pakan_per_hari) VALUES (?, ?, ?, ?, ?, ?)').bind(id, auth.user.id, nama, tanggalLahir, parseInt(populasi) || 0, parseFloat(pakanPerHari) || 0).run();
         return jsonResponse({ message: 'Koloni ditambahkan', id }, 201);
+    }
+
+    // ----------------------------------------------------------------
+    // KOLONI: PUT (EDIT) -> FITUR BARU
+    // ----------------------------------------------------------------
+    if (path.startsWith('/api/koloni/') && method === 'PUT') {
+        const auth = await requireAuth(request, env);
+        if (auth.error) return auth.error;
+        const statusCheck = await checkUserStatus(auth.user, env);
+        if (!statusCheck.allowed) return jsonResponse({ error: 'access_denied', message: statusCheck.message }, 403);
+        
+        const koloniId = path.split('/').pop();
+        const { nama, tanggalLahir, populasi, pakanPerHari } = await request.json();
+        
+        await env.DB.prepare(
+            'UPDATE koloni SET nama = ?, tanggal_lahir = ?, populasi = ?, pakan_per_hari = ? WHERE id = ? AND user_id = ?'
+        ).bind(nama, tanggalLahir, parseInt(populasi) || 0, parseFloat(pakanPerHari) || 0, koloniId, auth.user.id).run();
+        
+        return jsonResponse({ message: 'Koloni berhasil diperbarui' });
     }
 
     // KOLONI: DELETE
