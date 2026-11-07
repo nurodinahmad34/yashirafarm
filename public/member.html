@@ -19,27 +19,23 @@
         .header h1 { font-size: 22px; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
         
-        /* Stats */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .stat-card { background: var(--card); padding: 14px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; border-bottom: 3px solid var(--primary); }
         .stat-card .label { font-size: 11px; color: var(--text-light); text-transform: uppercase; font-weight: 700; }
         .stat-card .value { font-size: 20px; font-weight: 800; color: var(--primary-dark); margin-top: 4px; }
         .stat-card .value.uang { color: #d97706; }
         
-        /* Menu Grid */
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .menu-grid button { padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 14px; }
         .btn-vaksin { background: var(--accent); color: #000; }
         .btn-penyakit { background: #ffcdd2; color: #b71c1c; }
 
-        /* Tab Nav */
         .tab-nav { display: flex; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
         .tab-nav button { flex: 1; padding: 12px; border: none; background: transparent; font-size: 14px; font-weight: 700; color: var(--text-light); cursor: pointer; border-bottom: 3px solid transparent; }
         .tab-nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0f7f0; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* Form */
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 13px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; }
         .form-group input, .form-group select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 15px; background: white; }
@@ -49,8 +45,8 @@
         .btn-danger { background: var(--danger); color: white; }
         .btn-sm { padding: 6px 14px; font-size: 12px; width: auto; }
         .btn-info { background: #0277bd; color: white; }
+        .btn-warning { background: var(--accent); color: #000; }
         
-        /* List Items */
         .koloni-item { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 12px; border-left: 5px solid var(--primary); }
         .koloni-item .nama { font-size: 17px; font-weight: 800; }
         .koloni-item .detail { font-size: 13px; color: var(--text-light); margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px 12px; }
@@ -64,13 +60,11 @@
         .transaksi-item .nominal.plus { color: var(--success); }
         .transaksi-item .nominal.minus { color: var(--danger); }
         
-        /* Footer */
         .app-footer { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 12px 16px; text-align: center; border-top: 2px solid var(--primary); box-shadow: 0 -2px 10px rgba(0,0,0,0.08); max-width: 480px; margin: 0 auto; width: 100%; z-index: 999; }
         #footerTelegramBtn { background: none; border: none; color: var(--primary); font-weight: 800; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; padding: 10px 20px; width: 100%; border-radius: 8px; }
         #footerTelegramBtn:active { background: #e8f5e9; }
         #footerTelegramBtn::before { content: "💬"; font-size: 20px; }
         
-        /* Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 200; padding: 20px; }
         .modal-overlay.show { display: flex; }
         .modal-box { background: white; border-radius: 16px; padding: 24px; max-width: 440px; width: 100%; max-height: 90vh; overflow-y: auto; }
@@ -81,7 +75,6 @@
         .empty-state { text-align: center; padding: 40px 20px; color: var(--text-light); }
         .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
 
-        /* CSS KHUSUS UNTUK CETAK / DOWNLOAD PDF */
         @media print {
             body { background: white; padding: 0; }
             .container { max-width: 100%; padding: 0; }
@@ -93,7 +86,6 @@
             .tab-content { display: block !important; margin-bottom: 30px; }
             .tab-content::before { content: attr(data-title); display: block; font-size: 18px; font-weight: bold; margin-bottom: 10px; border-bottom: 1px dashed #000; }
             .koloni-item .saran-pakan { border: 1px solid #000; }
-            /* Sembunyikan tombol hapus di kertas */
             .koloni-item .actions button, .transaksi-item button { display: none !important; }
         }
         .print-header { display: none; }
@@ -101,13 +93,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header Web -->
         <div class="header">
             <h1><img src="/yashirafarm-webp.webp" alt="Logo" style="height:30px; border-radius:4px;"> YashiraFarm</h1>
             <p>Manajemen Koloni & Keuangan</p>
         </div>
 
-        <!-- Header Khusus Cetak (Hanya muncul di kertas/PDF) -->
         <div class="print-header">
             <h2>Laporan Peternakan YashiraFarm</h2>
             <p>Dicetak pada: <span id="printDate"></span></p>
@@ -115,13 +105,11 @@
 
         <button class="logout-btn" id="btnLogout">🚪 Logout</button>
 
-        <!-- Tombol Cetak & Hapus Data -->
         <div style="display: flex; gap: 10px; margin-bottom: 16px;">
             <button class="btn btn-info" onclick="cetakLaporan()">🖨️ Cetak / Simpan PDF</button>
             <button class="btn btn-danger" onclick="hapusSemuaData()" style="width: 50px;" title="Hapus Semua Data">🗑️</button>
         </div>
 
-        <!-- Stats -->
         <div class="stats-grid">
             <div class="stat-card"><div class="label">Koloni</div><div class="value" id="totalKoloni">0</div></div>
             <div class="stat-card"><div class="label">Populasi</div><div class="value" id="totalPopulasi">0</div></div>
@@ -129,25 +117,21 @@
             <div class="stat-card"><div class="label">Rata Pakan/Ekor</div><div class="value" id="rataPakan">Rp0</div></div>
         </div>
 
-        <!-- Menu Tambahan -->
         <div class="menu-grid">
             <button class="btn-vaksin" onclick="bukaModalInfo('vaksin')">💉 Jadwal Vaksin</button>
             <button class="btn-penyakit" onclick="bukaModalInfo('penyakit')">🦠 Penyakit Ayam</button>
         </div>
 
-        <!-- Tab -->
         <div class="tab-nav">
             <button class="active" data-tab="tabKoloni">📋 Koloni</button>
             <button data-tab="tabKeuangan">💰 Keuangan</button>
         </div>
 
-        <!-- Tab Koloni -->
         <div class="tab-content active" id="tabKoloni" data-title="Data Koloni">
             <button class="btn btn-primary" id="btnTambahKoloni" style="margin-bottom:16px;">+ Tambah Koloni</button>
             <div id="daftarKoloni"></div>
         </div>
 
-        <!-- Tab Keuangan -->
         <div class="tab-content" id="tabKeuangan" data-title="Data Keuangan">
             <div style="background:white;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:16px;">
                 <h3 style="font-size:16px;margin-bottom:12px;color:var(--primary);">Tambah Transaksi</h3>
@@ -162,11 +146,12 @@
             <div id="daftarTransaksi"></div>
         </div>
 
-        <!-- Modal Koloni -->
+        <!-- Modal Koloni (Bisa untuk Tambah & Edit) -->
         <div class="modal-overlay" id="modalKoloni">
             <div class="modal-box">
                 <button class="btn-close-modal" id="modalClose">✕</button>
                 <h2 id="modalTitle">Tambah Koloni</h2>
+                <input type="hidden" id="editKoloniId">
                 <div class="form-group"><label>Nama Koloni</label><input type="text" id="formNama" placeholder="Misal: Broiler A"></div>
                 <div class="form-group"><label>Tanggal Lahir / Masuk</label><input type="date" id="formTanggal"></div>
                 <div class="form-group"><label>Populasi (ekor)</label><input type="number" id="formPopulasi" placeholder="0" min="0"></div>
@@ -175,7 +160,6 @@
             </div>
         </div>
 
-        <!-- Modal Info (Vaksin/Penyakit) -->
         <div class="modal-overlay" id="modalInfo">
             <div class="modal-box">
                 <button class="btn-close-modal" onclick="document.getElementById('modalInfo').classList.remove('show')">✕</button>
@@ -190,7 +174,6 @@
     </div>
 
     <script>
-        // Data Saran Pakan
         const TAKARAN_PAKAN = [
             { minggu: 1, hariMulai: 1, hariSelesai: 7, rataGram: 12.14, fase: 'Starter (PK 20-22%)' },
             { minggu: 2, hariMulai: 8, hariSelesai: 14, rataGram: 20.43, fase: 'Starter (PK 20-22%)' },
@@ -269,7 +252,10 @@
                     <div class="nama">${k.nama}</div>
                     <div class="detail"><span>📅 ${k.tanggal_lahir}</span><span>⏱ ${hitungUmur(k.tanggal_lahir)}</span><span>🐔 ${k.populasi} ekor</span></div>
                     ${saranHtml}
-                    <div class="actions"><button class="btn btn-danger btn-sm" onclick="hapusKoloni('${k.id}')">🗑 Hapus</button></div>
+                    <div class="actions">
+                        <button class="btn btn-warning btn-sm" onclick="bukaModalEdit('${k.id}')">✏️ Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="hapusKoloni('${k.id}')">🗑 Hapus</button>
+                    </div>
                 </div>`;
             }).join('');
         }
@@ -297,52 +283,69 @@
             try { await apiCall('/api/user/reset', 'DELETE'); alert('Semua data berhasil dihapus.'); await loadData(); } catch (e) { alert(e.message); }
         }
 
-        // MODAL INFO
         window.bukaModalInfo = (tipe) => {
             const title = document.getElementById('modalInfoTitle');
             const content = document.getElementById('modalInfoContent');
             document.getElementById('modalInfo').classList.add('show');
             if (tipe === 'vaksin') {
                 title.textContent = '💉 Jadwal Vaksin Vital';
-                content.textContent = `Kalau di kami, vaksin ini yang vital dan penting saja.
-
-Minggu 1: ND-IB (tetes)
-Minggu 3: Gumboro A (tetes)
-Minggu 4: Gumboro B (tetes)
-
-Bulan ke-2 [repeat]: ND-IB atau ND Lasota 1x (tetes/air minum)
-Bulan ke-3 [repeat]: ND-IB atau ND Lasota 1x (tetes/air minum)
-
-Lepas dari itu, per 3 bulan sekali divaksin suntik: ND-G7-IB-AI.
-
-Kami masih vaksin karena menerima tamu dan masih ada keluar masuk.`;
+                content.textContent = `Kalau di kami, vaksin ini yang vital dan penting saja.\n\nMinggu 1: ND-IB (tetes)\nMinggu 3: Gumboro A (tetes)\nMinggu 4: Gumboro B (tetes)\n\nBulan ke-2 [repeat]: ND-IB atau ND Lasota 1x (tetes/air minum)\nBulan ke-3 [repeat]: ND-IB atau ND Lasota 1x (tetes/air minum)\n\nLepas dari itu, per 3 bulan sekali divaksin suntik: ND-G7-IB-AI.\n\nKami masih vaksin karena menerima tamu dan masih ada keluar masuk.`;
             } else {
                 title.textContent = '🦠 Penyakit Ayam';
                 content.textContent = 'Informasi seputar penyakit ayam akan segera diupdate di sini.';
             }
         };
 
-        // CETAK LAPORAN
-        window.cetakLaporan = () => {
-            document.getElementById('printDate').textContent = new Date().toLocaleString('id-ID');
-            window.print();
-        };
+        window.cetakLaporan = () => { document.getElementById('printDate').textContent = new Date().toLocaleString('id-ID'); window.print(); };
 
-        // MODAL KOLONI
+        // MODAL KOLONI (Tambah & Edit)
         const modal = document.getElementById('modalKoloni');
+        
         document.getElementById('btnTambahKoloni').onclick = () => {
-            document.getElementById('modalTitle').textContent = 'Tambah Koloni';
-            document.getElementById('formNama').value = ''; document.getElementById('formTanggal').value = new Date().toISOString().slice(0,10);
-            document.getElementById('formPopulasi').value = ''; document.getElementById('formPakan').value = '';
+            document.getElementById('modalTitle').textContent = 'Tambah Koloni Baru';
+            document.getElementById('editKoloniId').value = '';
+            document.getElementById('formNama').value = ''; 
+            document.getElementById('formTanggal').value = new Date().toISOString().slice(0,10);
+            document.getElementById('formPopulasi').value = ''; 
+            document.getElementById('formPakan').value = '';
             modal.classList.add('show');
         };
+
+        window.bukaModalEdit = (id) => {
+            const k = koloniList.find(item => item.id === id);
+            if (!k) return;
+            document.getElementById('modalTitle').textContent = 'Edit Koloni';
+            document.getElementById('editKoloniId').value = k.id;
+            document.getElementById('formNama').value = k.nama;
+            document.getElementById('formTanggal').value = k.tanggal_lahir;
+            document.getElementById('formPopulasi').value = k.populasi;
+            document.getElementById('formPakan').value = k.pakan_per_hari;
+            modal.classList.add('show');
+        };
+
         document.getElementById('modalClose').onclick = () => modal.classList.remove('show');
         modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
+
         document.getElementById('btnSimpanKoloni').onclick = async () => {
-            const nama = document.getElementById('formNama').value; const tanggal = document.getElementById('formTanggal').value;
-            const populasi = document.getElementById('formPopulasi').value; const pakan = document.getElementById('formPakan').value;
+            const id = document.getElementById('editKoloniId').value;
+            const nama = document.getElementById('formNama').value; 
+            const tanggal = document.getElementById('formTanggal').value;
+            const populasi = document.getElementById('formPopulasi').value; 
+            const pakan = document.getElementById('formPakan').value;
+            
             if (!nama || !tanggal) return alert('Nama dan tanggal wajib diisi');
-            try { await apiCall('/api/koloni', 'POST', { nama, tanggalLahir: tanggal, populasi, pakanPerHari: pakan }); modal.classList.remove('show'); await loadData(); } catch (e) { alert(e.message); }
+            
+            try { 
+                if (id) {
+                    // Mode Edit
+                    await apiCall(`/api/koloni/${id}`, 'PUT', { nama, tanggalLahir: tanggal, populasi, pakanPerHari: pakan });
+                } else {
+                    // Mode Tambah
+                    await apiCall('/api/koloni', 'POST', { nama, tanggalLahir: tanggal, populasi, pakanPerHari: pakan }); 
+                }
+                modal.classList.remove('show'); 
+                await loadData(); 
+            } catch (e) { alert(e.message); }
         };
 
         document.getElementById('btnSimpanTrx').onclick = async () => {
